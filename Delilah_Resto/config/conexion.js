@@ -1,5 +1,18 @@
-let mongoose = require('mongoose');
+const Sequelize = require('sequelize');
+//const MovieModel = require("./models/movie");
+const UserModel = require("./../models/user");
+const sequelize = new Sequelize("delilahdb", "root", "12345", {
+    host: "localhost",
+    dialect: "mariadb"
+});
 
-mongoose.connect('mongodb://username:password@port.mlab.com:15446/databasename', { useMongoClient: true }); //mongodb://localhost:27017/crud
+//const Movie = MovieModel(sequelize, Sequelize);
+const User = UserModel(sequelize, Sequelize);
 
-module.exports = mongoose;
+sequelize.sync({ force: false }).then(() => {
+    console.info("Tablas sincronizadas");
+}).catch(console.error);
+
+module.exports = {
+    User
+}

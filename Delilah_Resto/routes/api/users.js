@@ -4,53 +4,38 @@ const { User } = require("../../config/conexion");
 const { check, validationResult } = require("express-validator");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-const { req, res } = require("../../app");
+const { req, res } = require("../../index");
 
 
+/*Endpoint registrar usuario*/
 router.post('/register', async (req, res) => {
-  console.log(req.body);
 
-  const errors = validationResult(req);
+  const errors = validationResult(req)
 
-  if (!errors.isEmpty()) {
-    return res.status(404).json({ errores: errors.array() });
+  if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() });
+
+  const email = await User.findOne({ where: { email: req.body.email } })
+
+  if (email) { res.json({ error: "El usuario ya existe" }) }
+  else {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
+    const user = await User.create(req.body);
+    res.json(user);
   }
-
-  req.body.password = bcrypt.hashSync(req.body.password, 10);
-  const user = await User.create(req.body);
-  res.json(user);
-
-
-  /* 
-  if (req.body._id === "") {
-  let per = new Persona({
-     nombres: req.body.nombres,
-     apellidos: req.body.apellidos,
-     edad: req.body.edad
-   });
- 
-   per.save();
- } else {
-   //console.log(req.body._id);
-   Persona.findByIdAndUpdate(req.body._id, { $set: req.body }, { new: true }, (err, model) => {
-     if (err) throw err;
-   });
- }
- res.redirect('/'); */
 });
 
+/* Enpoint login de usuario */
 router.post("/login", async (req, res) => {
 
   const user = await User.findOne({ where: { email: req.body.email } })
   const same = bcrypt.compareSync(req.body.password, user.password)
-  same ? (
-    res.json({ success: "Ya estas dentro " }),
+  if (same) {
+    res.json({ success: "Ya estas dentro " })
     createToken(user)
-  ) : (
-      res.json({ error: "Usuario y/o contraseña incorrectos" })
-    )
+  } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
 })
 
+/* Crear token para cada usuario */
 const createToken = (user) => {
   const payload = {
     usuarioId: user.id,
@@ -59,6 +44,5 @@ const createToken = (user) => {
   }
   return jwt.encode(payload, "secreto");
 }
-
 
 module.exports = router;

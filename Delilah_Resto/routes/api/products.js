@@ -12,7 +12,10 @@ router.get("/", async (req, res) => {
 });
 
 /* Endpoint para crear un producto */
-router.post('/', async (req, res) => {
+router.post('/', [
+    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
+    check("price", "El precio es obligatorio").not().isEmpty(),
+], async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() });
 
@@ -27,7 +30,10 @@ router.post('/', async (req, res) => {
 })
 
 /* Enpoint para actualizar un producto */
-router.put('/:productId', async (req, res) => {
+router.put('/:productId', [
+    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
+    check("price", "El precio es obligatorio").not().isEmpty(),
+], async (req, res) => {
     await Product.update(req.body, {
         where: { id: req.params.productId }
     })

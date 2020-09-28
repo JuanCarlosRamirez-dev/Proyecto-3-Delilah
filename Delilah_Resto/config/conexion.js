@@ -10,7 +10,7 @@ const Product = ProductModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
 
 sequelize.sync({ force: false }).then(() => {
-    console.info("Tablas sincronizadas");
+    console.info("Conectado a la base de datos");
 }).catch(console.error);
 
 module.exports = {

@@ -4,11 +4,16 @@ const { User } = require("../../config/conexion");
 const { check, validationResult } = require("express-validator");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-const { req, res } = require("../../index");
 
 
 /*Endpoint registrar usuario*/
-router.post('/register', async (req, res) => {
+router.post('/register', [
+  check("name", "El usuario es obligatorio").not().isEmpty(),
+  check("password", "La contraseña es obligatoria").not().isEmpty(),
+  check("email", "El email es obligatorio").not().isEmpty(),
+  check("telephone", "El telefono es obligatorio").not().isEmpty(),
+  check("address", "La dirección es obligatoria").not().isEmpty(),
+], async (req, res) => {
 
   const errors = validationResult(req)
 
@@ -22,6 +27,7 @@ router.post('/register', async (req, res) => {
     const user = await User.create(req.body);
     res.json(user);
   }
+
 });
 
 /* Enpoint login de usuario */

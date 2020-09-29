@@ -30,7 +30,11 @@ router.post("/login", async (req, res) => {
   const user = await User.findOne({ where: { email: req.body.email } })
   const same = bcrypt.compareSync(req.body.password, user.password)
   if (same) {
-    res.json({ success: "Ya estas dentro " })
+    res.json({
+      success: "Ya estas dentro ",
+      admin: user.admin,
+      token: createToken(user)
+    })
     createToken(user)
   } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
 })
@@ -39,6 +43,7 @@ router.post("/login", async (req, res) => {
 const createToken = (user) => {
   const payload = {
     usuarioId: user.id,
+    userAdmin: user.admin,
     createdAt: moment().unix,
     expiredAt: moment().add(5, "hours").unix
   }

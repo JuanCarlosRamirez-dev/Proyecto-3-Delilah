@@ -1,3 +1,4 @@
+
 module.exports = (sequelize, type) => {
     return sequelize.define("user", {
         id: {
@@ -5,11 +6,15 @@ module.exports = (sequelize, type) => {
             primaryKey: true,
             autoIncrement: true
         },
+        admin: {
+            type: type.BOOLEAN,
+            defaultValue: false
+        },
         name: type.STRING,
         lastname: type.STRING,
         email: type.STRING,
         telephone: type.INTEGER,
         address: type.STRING,
-        password: type.STRING(150)
+        password: type.STRING(150),
     });
 };

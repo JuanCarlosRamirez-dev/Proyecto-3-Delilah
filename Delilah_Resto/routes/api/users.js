@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const { User } = require("../../config/conexion");
+const sequelize = require("../../config/conexion");
+const { DataBase } = require("../../config/conexion");
 const { check, validationResult } = require("express-validator");
 const moment = require("moment");
 const jwt = require("jwt-simple");
@@ -19,12 +20,18 @@ router.post('/register', [
 
   if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() });
 
-  const email = await User.findOne({ where: { email: req.body.email } })
+  let emailLocal = req.body.email
+
+  const email = await DataBase.query(`SELECT email FROM delilah.users WHERE email = "${emailLocal}"`, { type: sequelize.QueryTypes.SELECT })
+
+  console.log(email)
 
   if (email) { res.json({ error: "El usuario ya existe" }) }
   else {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
-    const user = await User.create(req.body);
+    const user = await DataBase.query(`INSERT INTO delilah.users (name,lastname,email,telephone,address,password) VALUES (?,?,?,?,?,?)`,
+      { replacements: req.body, type: sequelize.QueryTypes.SELECT }
+    )
     res.json(user);
   }
 

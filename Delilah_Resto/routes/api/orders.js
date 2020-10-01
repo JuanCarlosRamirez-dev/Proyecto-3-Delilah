@@ -7,3 +7,5 @@ router.get("/", async (req, res) => {
     const order = await Order.findAll();
     res.send(order);
 });
+
+module.exports = router;

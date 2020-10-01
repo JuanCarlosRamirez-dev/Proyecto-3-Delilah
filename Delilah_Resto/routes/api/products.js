@@ -5,7 +5,6 @@ const { Product } = require("../../config/conexion");
 
 /* Endpoint para obtener informacion de los productos existentes */
 router.get("/", async (req, res) => {
-
     const product = await Product.findAll();
     res.send(product);
 });

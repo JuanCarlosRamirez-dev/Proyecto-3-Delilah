@@ -42,7 +42,6 @@ const isAdmin = async (req, res, next) => {
     } catch (error) {
         return res.json({ error: 'Error al validar usuario' })
     }
-
 }
 
 module.exports = {

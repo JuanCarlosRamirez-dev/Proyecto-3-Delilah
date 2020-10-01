@@ -14,6 +14,6 @@ router.use("/products/product", middlewares.isAdmin, apiProductsRouter);
 router.use("/products", middlewares.checkToken, apiProductsRouter);
 
 /* Orders */
-//router.use("/orders", apiOrdersRouter);
+router.use("/orders", apiOrdersRouter);
 
 module.exports = router;

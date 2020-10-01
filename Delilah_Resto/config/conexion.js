@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const ProductModel = require("./../models/product");
 const UserModel = require("./../models/user");
+const OrderModel = require("./../models/order");
 const sequelize = new Sequelize("delilahdb", "root", "12345", {
     host: "localhost",
     dialect: "mariadb"
@@ -8,6 +9,7 @@ const sequelize = new Sequelize("delilahdb", "root", "12345", {
 
 const Product = ProductModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
+const Order = OrderModel(sequelize, Sequelize);
 
 sequelize.sync({ force: false }).then(() => {
     console.info("Tablas sincronizadas");
@@ -15,5 +17,6 @@ sequelize.sync({ force: false }).then(() => {
 
 module.exports = {
     User,
-    Product
+    Product,
+    Order
 }

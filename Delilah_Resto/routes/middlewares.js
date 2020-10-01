@@ -1,6 +1,5 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
-const { User } = require("../config/conexion");
 
 /* Token para usuario normal */
 const checkToken = (req, res, next) => {
@@ -26,7 +25,6 @@ const checkToken = (req, res, next) => {
 };
 
 const isAdmin = async (req, res, next) => {
-
 
     if (!req.headers["user-token"]) {
         return res.json({ error: "Falta token" });

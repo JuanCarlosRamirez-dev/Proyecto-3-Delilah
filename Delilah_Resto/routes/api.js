@@ -6,6 +6,7 @@ const apiOrdersRouter = require("./api/orders");
 
 
 /* User */
+//router.use("/users/:userId", middlewares.checkToken, apiUsersRouter);
 router.use("/users", apiUsersRouter);
 
 /* Products */
@@ -15,5 +16,7 @@ router.use("/products", middlewares.checkToken, apiProductsRouter);
 
 /* Orders */
 router.use("/orders", apiOrdersRouter);
+
+
 
 module.exports = router;

@@ -13,8 +13,8 @@ module.exports = (sequelize, type) => {
         name: type.STRING,
         lastname: type.STRING,
         email: type.STRING,
-        telephone: type.INTEGER,
+        telephone: type.STRING,
         address: type.STRING,
-        password: type.STRING(150),
+        password: type.STRING(150)
     });
 };

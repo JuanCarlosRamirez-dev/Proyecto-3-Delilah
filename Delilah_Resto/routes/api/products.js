@@ -5,14 +5,14 @@ const { Product } = require("../../config/conexion");
 
 /* Endpoint para obtener informacion de los productos existentes */
 router.get("/", async (req, res) => {
-    const product = await Product.findAll();
-    res.send(product);
+    const product = await Product.findAll()
+    res.send(product)
 });
 
 /* Endpoint para crear un producto */
 router.post('/product', async (req, res) => {
     const errors = validationResult(req)
-    if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() });
+    if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
     const productExist = await Product.findOne({ where: { productName: req.body.productName } })
 

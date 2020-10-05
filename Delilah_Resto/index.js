@@ -9,6 +9,7 @@ require("./config/conexion");
 app.listen(PORT_SERVER, () => {
   console.info(`Servidor arrancado en el puerto ${PORT_SERVER}`);
 });
+
 app.use(function (err, req, res, next) {
   if (!err) return next();
   console.log('Error en el servidor: ', err);

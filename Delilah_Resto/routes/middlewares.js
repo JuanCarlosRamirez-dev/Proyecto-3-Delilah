@@ -33,6 +33,11 @@ const isAdmin = async (req, res, next) => {
     let payload = {};
 
     try {
+
+        if (payload.expiredAt < moment().unix) {
+            return res.json({ error: "El token ha expirado" });
+        }
+
         payload = jwt.decode(userToken, "secreto");
         admin = payload.userAdmin
 

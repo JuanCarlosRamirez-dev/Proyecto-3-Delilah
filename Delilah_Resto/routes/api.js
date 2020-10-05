@@ -1,13 +1,14 @@
 const router = require("express").Router();
 const middlewares = require("./middlewares");
 const apiProductsRouter = require("./api/products");
-const apiUsersRouter = require("./api/users");
 const apiOrdersRouter = require("./api/orders");
+const { userRegister, userLogin, userModify } = require("./api/users");
 
 
 /* User */
-//router.use("/users/:userId", middlewares.checkToken, apiUsersRouter);
-router.use("/users", apiUsersRouter);
+router.post("/users", userRegister);
+router.post("/users/login", userLogin);
+router.put("/users", userModify);
 
 /* Products */
 router.use("/products/:productId", middlewares.isAdmin, apiProductsRouter);

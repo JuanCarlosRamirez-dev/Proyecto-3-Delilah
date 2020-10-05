@@ -1,59 +1,56 @@
-const router = require("express").Router();
+
 const bcrypt = require("bcryptjs");
 const { User } = require("../../config/conexion");
 const { check, validationResult } = require("express-validator");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-const { req, res } = require("../../index");
 
 
-/*Endpoint registrar usuario*/
-router.post('/register', async (req, res) => {
+module.exports = {
 
-  try {
-    const errors = validationResult(req)
+  userRegister: async (req, res) => {
 
-    if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
+    try {
+      const errors = validationResult(req)
 
-    const email = await User.findOne({ where: { email: req.body.email } })
+      if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
-    if (email) { res.json({ error: "El usuario ya existe" }) }
-    else {
-      req.body.password = bcrypt.hashSync(req.body.password, 10);
-      const user = await User.create(req.body);
-      res.json(user);
+      const email = await User.findOne({ where: { email: req.body.email } })
+
+      if (email) { res.json({ error: "El usuario ya existe" }) }
+      else {
+        req.body.password = bcrypt.hashSync(req.body.password, 10);
+        const user = await User.create(req.body);
+        res.json(user);
+      }
     }
-  }
-  catch (err) { res.status(404).json({ errores: err.array() }) }
+    catch (err) { res.status(404).json({ errores: err.array() }) }
+  },
 
-});
+  userLogin: async (req, res) => {
 
-/* Enpoint login de usuario */
-router.post("/login", async (req, res) => {
+    const user = await User.findOne({ where: { email: req.body.email } })
+    const same = bcrypt.compareSync(req.body.password, user.password)
+    if (same) {
+      res.json({
+        success: "Ya estas dentro ",
+        admin: user.admin,
+        token: createToken(user)
+      })
+      createToken(user)
+      //console.log(createToken(user))
+    } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
+  },
 
-  const user = await User.findOne({ where: { email: req.body.email } })
-  const same = bcrypt.compareSync(req.body.password, user.password)
-  if (same) {
-    res.json({
-      success: "Ya estas dentro ",
-      admin: user.admin,
-      token: createToken(user)
+  userModify: async (req, res) => {
+
+    await User.update(req.body, {
+      where: { id: req.params.userId }
     })
-    createToken(user)
-    //console.log(createToken(user))
-  } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
+    res.json({ success: "Usuario actualizado." })
+  }
 
-})
-
-/* Enpoint para modificar un usuario */
-router.put('/:userId', async (req, res) => {
-
-  await User.update(req.body, {
-    where: { id: req.params.userId }
-  })
-  res.json({ success: "Usuario actualizado." })
-
-})
+}
 
 /* Crear token para cada usuario */
 const createToken = (user) => {
@@ -66,4 +63,3 @@ const createToken = (user) => {
   return jwt.encode(payload, "secreto")
 }
 
-module.exports = router;

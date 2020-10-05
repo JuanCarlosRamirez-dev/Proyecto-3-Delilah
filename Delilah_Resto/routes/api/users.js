@@ -1,20 +1,19 @@
 
 const bcrypt = require("bcryptjs");
 const { User } = require("../../config/conexion");
-const { check, validationResult } = require("express-validator");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-
+const { validationResult } = require("express-validator");
 
 module.exports = {
 
   userRegister: async (req, res) => {
 
     try {
+
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
-
       const email = await User.findOne({ where: { email: req.body.email } })
 
       if (email) { res.json({ error: "El usuario ya existe" }) }

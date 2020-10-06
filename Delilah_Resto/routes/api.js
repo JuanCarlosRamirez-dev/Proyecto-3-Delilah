@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { check } = require("express-validator");
 const { isAdmin, checkToken } = require("./middlewares");
-const { getOrders } = require("./api/orders");
+const { getOrders, createOrder } = require("./api/orders");
 const { userRegister, userLogin, userModify } = require("./api/users");
 const { getAllProducts, createProduct, updateProduct, deleteProduct } = require("./api/products");
 
@@ -28,6 +28,7 @@ router.delete("/products/:productId", isAdmin, deleteProduct);
 
 /* Orders */
 router.get("/orders", getOrders);
+router.post("/orders", createOrder);
 
 
 module.exports = router;

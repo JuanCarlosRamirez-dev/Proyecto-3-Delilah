@@ -1,9 +1,14 @@
-
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize("delilahdb", "root", "12345", {
+  host: "localhost",
+  dialect: "mariadb"
+});
 const bcrypt = require("bcryptjs");
 const { User } = require("../../config/conexion");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-const { validationResult } = require("express-validator");
+const { check, validationResult } = require("express-validator");
+
 
 module.exports = {
 
@@ -12,18 +17,22 @@ module.exports = {
     try {
 
       const errors = validationResult(req)
-
       if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
+
+      //insert query that replaces findOne method
       const email = await User.findOne({ where: { email: req.body.email } })
 
       if (email) { res.json({ error: "El usuario ya existe" }) }
       else {
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
-        const user = await User.create(req.body);
-        res.json(user);
+        req.body.password = bcrypt.hashSync(req.body.password, 10)
+        const createUser = await sequelize.query(`INSERT INTO users (name,lastname,email,telephone,address,password) VALUES (:name,:lastname,:email,:telephone,:address,:password)`,
+          { replacements: req.body, type: sequelize.QueryTypes.SELECT })
+        res.json({
+          success: "Usuario creado con éxito"
+        })
       }
     }
-    catch (err) { res.status(404).json({ errores: err.array() }) }
+    catch (error) { res.send("Error: " + error) }
   },
 
   userLogin: async (req, res) => {
@@ -33,7 +42,6 @@ module.exports = {
     if (same) {
       res.json({
         success: "Ya estas dentro ",
-        admin: user.admin,
         token: createToken(user)
       })
       createToken(user)

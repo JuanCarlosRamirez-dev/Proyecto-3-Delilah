@@ -16,7 +16,6 @@ sequelize.sync({ force: false }).then(() => {
 }).catch(console.error);
 
 module.exports = {
-    User,
-    Product,
-    Order
+    sequelize,
+    User
 }

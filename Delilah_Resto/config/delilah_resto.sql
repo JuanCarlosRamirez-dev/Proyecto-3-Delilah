@@ -84,9 +84,10 @@ CREATE TABLE `customers` (
 
 insert into customers (customer_name,customer_lastname,email,phone_number,address,city_id,password)
 values
+("Diego","Hernandez","diego@gmail.com","5563639698","Av. Tezontle #6","1","dieguito"),
 ("Felipe","Huerta","Felipe@gmail.com","5565969632","Av. Hidalgo #96","2","felipillo"),
 ("Enrique","Castillo","enrique@gmail.com","553639689","Tepopotla #85","3","enriquito12345"),
-("Diego","Hernandez","diego@gmail.com","5545858578","Andadores #4","4","diego12345"),
+("Juan Carlos","Ramirez","juan@gmail.com","5545858578","Andadores #4","4","juan12345"),
 ("Gustavo","Ortega","gustavo@gmail.com","5545855812","Calle #9","5","gustavo54321"),
 ("Cesar","Duarte","cesar@gmail.com","5532639689","Av. Canalito #13","6","cesar12345");
 
@@ -167,8 +168,7 @@ values
 ("2","Deliver at the door","2"),
 ("3","Deliver at the park","2"),
 ("4","none","1"),
-("5","Deliver in the red car","3"),
-("6","none","3");
+("5","Deliver in the red car","3");
 
 --------------------------------------------------------------
 
@@ -216,11 +216,11 @@ values
 (3,2,2),
 (1,1,2),
 (7,8,3),
-(8,8,3),
-(9,8,4),
-(10,8,5),
-(11,8,5),
-(12,8,6),
+(8,5,3),
+(9,3,4),
+(10,7,5),
+(11,3,5),
+(12,2,1),
 (13,6,4);
 
 --------------------------------------------------------------
@@ -228,13 +228,15 @@ values
 -- delilah_resto.order_status definition
 
 CREATE TABLE `order_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `placed_order_id` int(11) DEFAULT NULL,
-  `status_catalog_id` int(11) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `placed_order_id` int DEFAULT NULL,
+  `status_catalog_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `order_status_FK` FOREIGN KEY (`id`) REFERENCES `placed_order` (`id`),
-  CONSTRAINT `order_status_FK_1` FOREIGN KEY (`id`) REFERENCES `status_catalog` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `order_status_FK` (`placed_order_id`),
+  KEY `order_status_FK_1` (`status_catalog_id`),
+  CONSTRAINT `order_status_FK` FOREIGN KEY (`placed_order_id`) REFERENCES `placed_order` (`id`),
+  CONSTRAINT `order_status_FK_1` FOREIGN KEY (`status_catalog_id`) REFERENCES `status_catalog` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --data insertion for order_status table
 
@@ -264,7 +266,6 @@ join delilah_resto.menu_item mi on
 
 select	
 	placed_order_id,
-	sum(mi.price) as total_wo_quantities,
 	sum(io.quantity * mi.price) as total_per_order
 from
 	delilah_resto.in_order io

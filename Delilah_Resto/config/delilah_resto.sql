@@ -146,33 +146,29 @@ values
 
 --------------------------------------------------------------
 
--- delilah_resto.placed_order definition
-
 CREATE TABLE `placed_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,
   `date_placed` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `comment` text DEFAULT NULL,
   `payment_id` int(11) NOT NULL,
-  `in_order_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `placed_order_FK` (`customer_id`),
   KEY `placed_order_FK_1` (`payment_id`),
-  KEY `placed_order_FK_2` (`in_order_id`),
   CONSTRAINT `placed_order_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
-  CONSTRAINT `placed_order_FK_1` FOREIGN KEY (`payment_id`) REFERENCES `payment_catalog` (`id`),
-  CONSTRAINT `placed_order_FK_2` FOREIGN KEY (`in_order_id`) REFERENCES `in_order` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `placed_order_FK_1` FOREIGN KEY (`payment_id`) REFERENCES `payment_catalog` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --data insertion for placed_order table
 
-insert into placed_order (customer_id,comment,payment_id,in_order_id)
+insert into placed_order (customer_id,comment,payment_id)
 values
-("1","none","1","1"),
-("2","Deliver at the door","2","2"),
-("4","none","1","3"),
-("5","Deliver in the red car","3","4"),
-("6","none","3","5");
+("1","none","1"),
+("2","Deliver at the door","2"),
+("3","Deliver at the park","2"),
+("4","none","1"),
+("5","Deliver in the red car","3"),
+("6","none","3");
 
 --------------------------------------------------------------
 
@@ -203,21 +199,29 @@ CREATE TABLE `in_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_item_id` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `placed_order_id` int(11) DEFAULT NULL,
+  UNIQUE KEY `in_order_un` (`id`),
   KEY `in_order_FK` (`menu_item_id`),
-  CONSTRAINT `in_order_FK` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`id`)
+  KEY `in_order_FK_1` (`placed_order_id`),
+  CONSTRAINT `in_order_FK` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`id`),
+  CONSTRAINT `in_order_FK_1` FOREIGN KEY (`placed_order_id`) REFERENCES `placed_order` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --data insertion for in_order table
 
-insert into in_order (menu_item_id,quantity)
+insert into in_order (menu_item_id,quantity,placed_order_id)
 values
-(1,2),
-(2,3),
-(3,2),
-(1,1),
-(1,8),
-(6,6);
+(1,2,1),
+(2,3,1),
+(3,2,2),
+(1,1,2),
+(7,8,3),
+(8,8,3),
+(9,8,4),
+(10,8,5),
+(11,8,5),
+(12,8,6),
+(13,6,4);
 
 --------------------------------------------------------------
 
@@ -244,3 +248,40 @@ values
 (5,4);
 
 --------------------------------------------------------------
+
+--query to get all placed orders information
+
+select
+	*
+from
+	delilah_resto.in_order io
+join delilah_resto.menu_item mi on
+	mi.id = io.menu_item_id
+
+-------------------------------------------------------------
+
+--query to get the total price for each placed order 
+
+select	
+	placed_order_id,
+	sum(mi.price) as total_wo_quantities,
+	sum(io.quantity * mi.price) as total_per_order
+from
+	delilah_resto.in_order io
+join delilah_resto.menu_item mi on
+	mi.id = io.menu_item_id
+group by
+	io.placed_order_id
+
+-------------------------------------------------------------
+
+--query to get the total price of all placed orders
+
+select
+	sum(io.quantity * mi.price) as total_all_orders
+from
+	delilah_resto.in_order io
+join delilah_resto.menu_item mi on
+	mi.id = io.menu_item_id
+
+-------------------------------------------------------------

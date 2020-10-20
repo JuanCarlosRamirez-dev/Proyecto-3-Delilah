@@ -1,6 +1,7 @@
-
-const { validationResult } = require("express-validator");
+const router = require("express").Router();
+const { check, validationResult } = require("express-validator");
 const { Product } = require("../../config/conexion");
+
 
 module.exports = {
 

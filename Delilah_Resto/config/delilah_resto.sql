@@ -146,8 +146,6 @@ values
 
 --------------------------------------------------------------
 
--- delilah_resto.placed_order definition
-
 CREATE TABLE `placed_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,

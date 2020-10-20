@@ -1,11 +1,34 @@
 const router = require("express").Router();
-//const middlewares = require("./middlewares");
-const apiProductsRouter = require("./api/products");
-const apiUsersRouter = require("./api/users");
+const { check } = require("express-validator");
+const { isAdmin, checkToken } = require("./middlewares");
+const { getOrders, createOrder } = require("./api/orders");
+const { userRegister, userLogin, userModify } = require("./api/users");
+const { getAllProducts, createProduct, updateProduct, deleteProduct } = require("./api/products");
 
 
-//router.use("/movies", middlewares.checkToken, apiMoviesRouter);
-router.use("/products", apiProductsRouter);
-router.use("/users", apiUsersRouter);
+/* User */
+router.post("/users", [
+    check("name", "El usuario es obligatorio").not().isEmpty(),
+    check("password", "La contraseña es obligatoria").not().isEmpty(),
+    check("email", "El email es obligatorio").not().isEmpty(),
+    check("telephone", "El telefono es obligatorio").not().isEmpty(),
+    check("address", "La dirección es obligatoria").not().isEmpty(),
+], userRegister);
+router.post("/users/login", userLogin);
+router.put("/users", checkToken, userModify);
+
+/* Products */
+router.get("/products", checkToken, getAllProducts);
+router.post("/products", isAdmin, [
+    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
+    check("price", "El precio del producto es obligatorio").not().isEmpty()
+], createProduct);
+router.put("/products/:productId", isAdmin, updateProduct);
+router.delete("/products/:productId", isAdmin, deleteProduct);
+
+/* Orders */
+router.get("/orders", getOrders);
+router.post("/orders", createOrder);
+
 
 module.exports = router;

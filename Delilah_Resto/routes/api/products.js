@@ -3,49 +3,41 @@ const { check, validationResult } = require("express-validator");
 const { Product } = require("../../config/conexion");
 
 
-/* Endpoint para obtener informacion de los productos existentes */
-router.get("/", async (req, res) => {
-    // response.send("Welcome. Working!");
-    const product = await Product.findAll();
-    //console.log(response.usuarioId);
-    res.send(product);
-});
+module.exports = {
 
-/* Endpoint para crear un producto */
-router.post('/', [
-    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
-    check("price", "El precio es obligatorio").not().isEmpty(),
-], async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() });
+    getAllProducts: async (req, res) => {
 
-    const productExist = await Product.findOne({ where: { productName: req.body.productName } })
+        const product = await Product.findAll()
+        res.send(product)
+    },
 
-    if (productExist) {
-        res.json({ error: "El producto ya existe." })
-    } else {
-        const product = await Product.create(req.body)
-        res.json({ success: "Producto creado con éxito: ", product })
+    createProduct: async (req, res) => {
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
+
+        const productExist = await Product.findOne({ where: { productName: req.body.productName } })
+
+        if (productExist) {
+            res.json({ error: "El producto ya existe." })
+        } else {
+            const product = await Product.create(req.body)
+            res.json({ success: "Producto creado con éxito: ", product })
+        }
+    },
+
+    updateProduct: async (req, res) => {
+
+        await Product.update(req.body, {
+            where: { id: req.params.productId }
+        })
+        res.json({ success: "Producto actualizado." })
+    },
+
+    deleteProduct: async (req, res) => {
+        await Product.destroy({
+            where: { id: req.params.productId }
+        })
+        res.json({ success: "Producto eliminado con exito." })
     }
-})
-
-/* Enpoint para actualizar un producto */
-router.put('/:productId', [
-    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
-    check("price", "El precio es obligatorio").not().isEmpty(),
-], async (req, res) => {
-    await Product.update(req.body, {
-        where: { id: req.params.productId }
-    })
-    res.json({ success: "Producto actualizado." })
-})
-
-/* Endpoint para eliminar un producto */
-router.delete('/:productId', async (req, res) => {
-    await Product.destroy({
-        where: { id: req.params.productId }
-    })
-    res.json({ success: "Producto eliminado con exito." })
-})
-
-module.exports = router;
+}

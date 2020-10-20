@@ -1,17 +1,13 @@
-const sequelize = require('sequelize');
-const ProductModel = require("./../models/product");
-const UserModel = require("./../models/user");
-const DataBase = new sequelize("delilahdb", "root", "12345", {
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize("delilah_resto", "root", "12345", {
     host: "localhost",
-    dialect: "mariadb"
+    dialect: "mysql"
 });
 
-DataBase.authenticate().then(() => {
-    console.log('Conectado a la db exitosamente.');
-}).catch(err => {
-    console.error('Error de conexion:', err);
-}).finally(() => {
-    DataBase.close();
-});
+sequelize.sync({ force: false }).then(() => {
+    console.info("Tablas sincronizadas");
+}).catch(console.error);
 
-module.exports = { DataBase, sequelize }
+module.exports = {
+    sequelize    
+}

@@ -1,13 +1,12 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilahdb", "root", "12345", {
+const sequelize = new Sequelize("delilah_resto", "root", "12345", {
   host: "localhost",
-  dialect: "mariadb"
+  dialect: "mysql"
 });
 const bcrypt = require("bcryptjs");
-const { User } = require("../../config/conexion");
 const moment = require("moment");
 const jwt = require("jwt-simple");
-const { check, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 
 
 module.exports = {
@@ -16,37 +15,42 @@ module.exports = {
 
     try {
 
+
       const errors = validationResult(req)
       if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
-      //insert query that replaces findOne method
-      const email = await User.findOne({ where: { email: req.body.email } })
+      const email = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
+        { type: sequelize.QueryTypes.SELECT });
 
-      if (email) { res.json({ error: "El usuario ya existe" }) }
+      if (email[0].email) { res.json({ error: "El usuario ya existe" }) }
       else {
         req.body.password = bcrypt.hashSync(req.body.password, 10)
-        const createUser = await sequelize.query(`INSERT INTO users (name,lastname,email,telephone,address,password) VALUES (:name,:lastname,:email,:telephone,:address,:password)`,
+        const createUser = await sequelize.query(`INSERT INTO customers (customer_name,customer_lastname,email,phone_number,address,city_id,password) VALUES (:customer_name,:customer_lastname,:email,:phone_number,:address,:city_id,:password)`,
           { replacements: req.body, type: sequelize.QueryTypes.SELECT })
-        res.json({
-          success: "Usuario creado con éxito"
-        })
+        res.json({ success: "Usuario creado con éxito" })
       }
     }
-    catch (error) { res.send("Error: " + error) }
+    catch (error) { res.status(400).json("Error: " + error) }
   },
 
   userLogin: async (req, res) => {
 
-    const user = await User.findOne({ where: { email: req.body.email } })
-    const same = bcrypt.compareSync(req.body.password, user.password)
-    if (same) {
-      res.json({
-        success: "Ya estas dentro ",
-        token: createToken(user)
-      })
-      createToken(user)
-      //console.log(createToken(user))
-    } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
+    try {
+
+      const getUser = await sequelize.query(`SELECT DISTINCT id,admin,password FROM customers WHERE email = "${req.body.email}"`,
+        { type: sequelize.QueryTypes.SELECT })
+
+      const same = bcrypt.compareSync(req.body.password, getUser[0].password)
+      if (same) {
+        res.json({
+          success: "Ya estas dentro ",
+          token: createToken(getUser)
+        })
+        createToken(getUser)
+      } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
+    }
+    catch (error) { res.status(400).json("Error: " + error) }
+
   },
 
   userModify: async (req, res) => {
@@ -60,10 +64,10 @@ module.exports = {
 }
 
 /* Crear token para cada usuario */
-const createToken = (user) => {
+const createToken = (getUser) => {
   const payload = {
-    usuarioId: user.id,
-    userAdmin: user.admin,
+    usuarioId: getUser[0].id,
+    userAdmin: getUser[0].admin,
     createdAt: moment().unix,
     expiredAt: moment().add(10, "minutes").unix
   }

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilahdb", "root", "12345", {
+const sequelize = new Sequelize("delilah_resto", "root", "12345", {
     host: "localhost",
-    dialect: "mariadb"
+    dialect: "mysql"
 });
 const jwt = require("jwt-simple");
 const moment = require("moment");

@@ -1,4 +1,9 @@
-const router = require("express").Router();
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize("delilah_resto", "root", "12345", {
+    host: "localhost",
+    dialect: "mysql"
+});
+
 const { check, validationResult } = require("express-validator");
 const { Product } = require("../../config/conexion");
 

@@ -8,21 +8,19 @@ const moment = require("moment");
 const jwt = require("jwt-simple");
 const { validationResult } = require("express-validator");
 
-
 module.exports = {
 
   userRegister: async (req, res) => {
 
     try {
 
-
       const errors = validationResult(req)
       if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
-      const email = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
+      const reqEmail = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
         { type: sequelize.QueryTypes.SELECT });
-
-      if (email[0].email) { res.json({ error: "El usuario ya existe" }) }
+      //console.info(reqEmail)
+      if (reqEmail[0]) { res.json({ error: "El usuario ya existe" }) }
       else {
         req.body.password = bcrypt.hashSync(req.body.password, 10)
         const createUser = await sequelize.query(`INSERT INTO customers (customer_name,customer_lastname,email,phone_number,address,city_id,password) VALUES (:customer_name,:customer_lastname,:email,:phone_number,:address,:city_id,:password)`,

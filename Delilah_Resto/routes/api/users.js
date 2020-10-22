@@ -17,7 +17,7 @@ module.exports = {
       const errors = validationResult(req)
       if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
-      const reqEmail = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
+      let reqEmail = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
         { type: sequelize.QueryTypes.SELECT });
       //console.info(reqEmail)
       if (reqEmail[0]) { res.json({ error: "El usuario ya existe" }) }

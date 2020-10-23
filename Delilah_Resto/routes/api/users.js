@@ -1,14 +1,22 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilah_resto", "root", "12345", {
-  host: "localhost",
-  dialect: "mysql"
-});
-const bcrypt = require("bcryptjs");
-const moment = require("moment");
-const jwt = require("jwt-simple");
-const { validationResult } = require("express-validator");
 
-module.exports = {
+const userServices = require("../../services/user_services")
+const router = require("express").Router();
+
+router.post("/", [
+  check("customer_name", "El usuario es obligatorio").not().isEmpty(),
+  check("password", "La contraseña es obligatoria").not().isEmpty(),
+  check("email", "El email es obligatorio").not().isEmpty(),
+  check("phone_number", "El telefono es obligatorio").not().isEmpty(),
+  check("address", "La dirección es obligatoria").not().isEmpty(),
+], userServices.userRegister);
+
+router.post("/login", userServices.userLogin);
+
+router.put("/:userId", userServices.userModify);
+
+module.exports = router
+
+/* module.exports = {
 
   userRegister: async (req, res) => {
 
@@ -61,7 +69,7 @@ module.exports = {
 
 }
 
-/* Crear token para cada usuario */
+
 const createToken = (getUser) => {
   const payload = {
     usuarioId: getUser[0].id,
@@ -70,4 +78,4 @@ const createToken = (getUser) => {
     expiredAt: moment().add(10, "minutes").unix
   }
   return jwt.encode(payload, "secreto")
-}
+} */

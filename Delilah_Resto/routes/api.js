@@ -1,12 +1,19 @@
 const router = require("express").Router();
-const { check } = require("express-validator");
+const userRoute = require("./api/users");
+const productRoute = require("./api/products");
+const orderRoute = require("./api/orders");
+/* const { check } = require("express-validator");
 const { isAdmin, checkToken } = require("./middlewares");
 const { getOrders, createOrder } = require("./api/orders");
 const { userRegister, userLogin, userModify } = require("./api/users");
-const { getAllProducts, createProduct, updateProduct, deleteProduct } = require("./api/products");
+const { getAllProducts, createProduct, updateProduct, deleteProduct } = require("./api/products"); */
 
 
-/* User endpoints*/
+router.use("/users", userRoute);
+router.use("/products", productRoute);
+router.use("/orders", orderRoute)
+
+/* 
 router.post("/users", [
     check("customer_name", "El usuario es obligatorio").not().isEmpty(),
     check("password", "La contraseña es obligatoria").not().isEmpty(),
@@ -17,7 +24,7 @@ router.post("/users", [
 router.post("/users/login", userLogin);
 router.put("/users", checkToken, userModify);
 
-/* Products endpoints*/
+
 router.get("/products", checkToken, getAllProducts);
 router.post("/products", isAdmin, [
     check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
@@ -26,9 +33,11 @@ router.post("/products", isAdmin, [
 router.put("/products/:productId", isAdmin, updateProduct);
 router.delete("/products/:productId", isAdmin, deleteProduct);
 
-/* Orders endpoints*/
+
 router.get("/orders", getOrders);
 router.post("/orders", createOrder);
+ */
+
 
 
 module.exports = router;

@@ -1,11 +1,14 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilah_resto", "root", "12345", {
-    host: "localhost",
-    dialect: "mysql"
-});
-const jwt = require("jwt-simple");
-const moment = require("moment");
 
+const router = require("express").Router();
+const orderServices = require("../../services/order-services")
+
+router.get("/", orderServices.getOrders)
+router.post("/", orderServices.createOrders)
+
+
+module.exports = router
+
+/*
 module.exports = {
 
     getOrders: async (req, res) => {
@@ -29,4 +32,4 @@ module.exports = {
         }
         catch (error) { res.send("Error: " + error) }
     }
-}
+\} */

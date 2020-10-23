@@ -1,13 +1,17 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilah_resto", "root", "12345", {
-    host: "localhost",
-    dialect: "mysql"
-});
+const router = require("express").Router();
+const productServices = require("../../services/product-services");
 
-const { check, validationResult } = require("express-validator");
-const { Product } = require("../../config/conexion");
+router.get("/", productServices.getAllProducts)
+router.post("/", [
+    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
+    check("price", "El precio del producto es obligatorio").not().isEmpty()
+], productServices.createProduct)
+router.put("/:productId", productServices.updateProduct)
+router.delete("/:productId", productServices.deleteProduct)
 
 
+module.exports = router
+/*
 module.exports = {
 
     getAllProducts: async (req, res) => {
@@ -46,3 +50,4 @@ module.exports = {
         res.json({ success: "Producto eliminado con exito." })
     }
 }
+ */

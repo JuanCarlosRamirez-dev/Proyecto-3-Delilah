@@ -8,3 +8,4 @@ sequelize.sync({ force: false }).then(() => {
     console.info("Tablas sincronizadas");
 }).catch(console.error);
 
+module.exports = { sequelize }

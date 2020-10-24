@@ -1,6 +1,5 @@
-const sequelize = require("../config/conexion")
+const sequelize = require("../api/config/conexion")
 const { validationResult } = require("express-validator");
-const { Product } = require("../../config/conexion");
 
 async function getAllProducts(req, res) {
 

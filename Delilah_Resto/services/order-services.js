@@ -1,4 +1,4 @@
-const sequelize = require("../config/conexion")
+const sequelize = require("../api/config/conexion")
 const jwt = require("jwt-simple");
 const moment = require("moment");
 

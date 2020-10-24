@@ -41,7 +41,7 @@ module.exports = {
             }
 
             payload = jwt.decode(userToken, "secreto");
-            admin = payload.userAdmin
+            let admin = payload.userAdmin
 
             if (admin) { next(); }
             else { res.json("No tienes permiso") }

@@ -2,9 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const PORT_SERVER = 3000;
-const apiRouter = require("./routes/api");
+const apiRouter = require("./api/api");
 
-require("./config/conexion");
+require("./api/config/conexion");
 
 app.listen(PORT_SERVER, () => {
   console.info(`Servidor arrancado en el puerto ${PORT_SERVER}`);
@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api", apiRouter);
 
-app.get("/", (request, response) => {
+app.get("/api", (request, response) => {
   response.send("Hola Mundo");
 });
 

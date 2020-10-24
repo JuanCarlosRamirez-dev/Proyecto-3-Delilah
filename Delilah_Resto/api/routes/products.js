@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const productServices = require("../../services/product-services");
+const { check } = require("express-validator");
 
 router.get("/", productServices.getAllProducts)
 router.post("/", [

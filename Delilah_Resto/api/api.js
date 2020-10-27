@@ -8,7 +8,6 @@ const { getOrders, createOrder } = require("./api/orders");
 const { userRegister, userLogin, userModify } = require("./api/users");
 const { getAllProducts, createProduct, updateProduct, deleteProduct } = require("./api/products"); */
 
-
 router.use("/users", userRoute);
 router.use("/products", productRoute);
 router.use("/orders", orderRoute)

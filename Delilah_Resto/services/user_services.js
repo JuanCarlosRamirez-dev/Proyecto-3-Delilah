@@ -20,7 +20,11 @@ async function userRegister(req, res) {
             req.body.password = bcrypt.hashSync(req.body.password, 10)
             const createUser = await sequelize.query(`INSERT INTO customers (customer_name,customer_lastname,email,phone_number,address,city_id,password) VALUES (:customer_name,:customer_lastname,:email,:phone_number,:address,:city_id,:password)`,
                 { replacements: req.body, type: sequelize.QueryTypes.SELECT })
-            res.json({ success: "Usuario creado con éxito" })
+            res.json({
+                success: "Usuario creado con éxito",
+                User: createUser.customer_name,
+                Email: createUser.email
+            })
         }
     }
     catch (error) { res.status(400).json("Error: " + error) }

@@ -1,11 +1,13 @@
+require("dotenv/config");
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize("delilah_resto", "root", "12345", {
-    host: "localhost",
-    dialect: "mysql"
+
+const DATABASE = process.env.DB_NAME;
+const USER = process.env.DB_USER;
+const PASS = process.env.DB_PASS;
+const HOST = process.env.DB_HOST;
+const DIALECT = process.env.DB_DIALECT;
+
+module.exports = new Sequelize(DATABASE, USER, PASS, {
+    host: HOST,
+    dialect: DIALECT
 });
-
-sequelize.sync({ force: false }).then(() => {
-    console.info("Tablas sincronizadas");
-}).catch(console.error);
-
-module.exports = { sequelize }

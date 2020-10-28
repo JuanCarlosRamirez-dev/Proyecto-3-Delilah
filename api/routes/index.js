@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const userRoute = require("./routes/users");
-const productRoute = require("./routes/products");
-const orderRoute = require("./routes/orders");
+const userRoute = require("./users");
+const productRoute = require("./products");
+const orderRoute = require("./orders");
 /* const { check } = require("express-validator");
 const { isAdmin, checkToken } = require("./middlewares");
 const { getOrders, createOrder } = require("./api/orders");

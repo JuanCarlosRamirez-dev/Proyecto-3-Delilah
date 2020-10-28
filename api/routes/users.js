@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const { check } = require("express-validator");
-const userServices = require("../../services/user_services");
+const userServices = require("../../services/user.service");
 
-router.post("/", [
+router.post("/register", [
   check("customer_name", "El usuario es obligatorio").not().isEmpty(),
   check("password", "La contraseña es obligatoria").not().isEmpty(),
   check("email", "El email es obligatorio").not().isEmpty(),

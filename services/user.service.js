@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const moment = require("moment");
 const jwt = require("jwt-simple");
 const { validationResult } = require("express-validator");
+const userQueries = require("../dal/repositories/user.repository")
 
 
 async function userRegister(req, res) {
@@ -12,13 +13,13 @@ async function userRegister(req, res) {
         const errors = validationResult(req)
         if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
 
-        let reqEmail = await sequelize.query(`SELECT DISTINCT email FROM customers WHERE email = "${req.body.email}"`,
+        let reqEmail = await sequelize.query(userQueries.requestEmailQuery(req.body.email),
             { type: sequelize.QueryTypes.SELECT });
         //console.info(reqEmail)
         if (reqEmail[0]) { res.json({ error: "El usuario ya existe" }) }
         else {
             req.body.password = bcrypt.hashSync(req.body.password, 10)
-            const createUser = await sequelize.query(`INSERT INTO customers (customer_name,customer_lastname,email,phone_number,address,city_id,password) VALUES (:customer_name,:customer_lastname,:email,:phone_number,:address,:city_id,:password)`,
+            const createUser = await sequelize.query(userQueries.createUserQuery(),
                 { replacements: req.body, type: sequelize.QueryTypes.SELECT })
             res.json({
                 success: "Usuario creado con éxito",
@@ -34,7 +35,7 @@ async function userLogin(req, res) {
 
     try {
 
-        const getUser = await sequelize.query(`SELECT DISTINCT id,admin,password FROM customers WHERE email = "${req.body.email}"`,
+        const getUser = await sequelize.query(userQueries.requestLoginQuery(req.body.email),
             { type: sequelize.QueryTypes.SELECT })
 
         const same = bcrypt.compareSync(req.body.password, getUser[0].password)
@@ -46,15 +47,32 @@ async function userLogin(req, res) {
             createToken(getUser)
         } else { res.json({ error: "Usuario y/o contraseña incorrectos" }) }
     }
-    catch (error) { res.status(400).json("Error: " + error) }
+    catch (error) { res.status(400).json("El nombre de usuario no existe") }
 }
 
 async function userModify(req, res) {
 
-    await User.update(req.body, {
-        where: { id: req.params.userId }
-    })
-    res.json({ success: "Usuario actualizado." })
+    const userId = req.params.userId;
+    const newUserParams = {
+        admin: req.body.admin,
+        nombre: req.body.customer_name,
+        apellido: req.body.customer_lastname,
+        email: req.body.email,
+        phone: req.body.phone_number,
+        address: req.body.address,
+        city: req.body.city_id,
+        pass: req.body.password
+    }
+
+    try {
+        const updateUserById = await sequelize.query(userQueries.updateUserQuery(userId, newUserParams),
+            { type: sequelize.QueryTypes.UPDATE })
+        res.json({
+            success: "Usuario actualizado.",
+            usuario: updateUserById.customer_name
+        })
+    }
+    catch (error) { res.status(400).json("Error: " + error) }
 
 }
 

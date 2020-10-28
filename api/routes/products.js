@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const productServices = require("../../services/product-services");
+const productServices = require("../../services/product.service");
 const { check } = require("express-validator");
 
 router.get("/", productServices.getAllProducts)

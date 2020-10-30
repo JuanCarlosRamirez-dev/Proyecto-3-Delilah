@@ -4,8 +4,9 @@ const { check } = require("express-validator");
 
 router.get("/", productServices.getAllProducts)
 router.post("/", [
-    check("productName", "El nombre del producto es obligatorio").not().isEmpty(),
-    check("price", "El precio del producto es obligatorio").not().isEmpty()
+    check("item_name", "El nombre del producto es obligatorio").not().isEmpty(),
+    check("price", "El precio del producto es obligatorio").not().isEmpty(),
+    check("category_id", "El precio del producto es obligatorio").not().isEmpty()
 ], productServices.createProduct)
 router.put("/:productId", productServices.updateProduct)
 router.delete("/:productId", productServices.deleteProduct)

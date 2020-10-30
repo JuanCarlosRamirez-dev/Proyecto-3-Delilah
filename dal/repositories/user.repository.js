@@ -1,3 +1,4 @@
+const { param } = require("../../api/routes/products");
 
 const requestEmailQuery = (email) => {
     const query = `SELECT DISTINCT email FROM customers WHERE email = "${email}"`;
@@ -14,8 +15,8 @@ const requestLoginQuery = (email) => {
     return query;
 }
 
-const updateUserQuery = (userId, params) => {
-    const query = `UPDATE customers SET admin="${params.admin}",customer_name="${params.nombre}",customer_lastname="${params.apellido}",email="${params.email}",phone_number="${params.phone}",address="${params.address}",city_id="${params.city}",password="${params.pass}" where id=${userId}`;
+const updateUserQuery = (productId, params) => {
+    const query = `UPDATE customers SET admin="${params.admin}",customer_name="${params.nombre}",customer_lastname="${params.apellido}",email="${params.email}",phone_number="${params.phone}",address="${params.address}",city_id="${params.city}",password="${params.pass}" where id=${productId}`;
     return query;
 }
 

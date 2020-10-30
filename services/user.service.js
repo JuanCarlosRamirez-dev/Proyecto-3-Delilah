@@ -69,7 +69,7 @@ async function userModify(req, res) {
             { type: sequelize.QueryTypes.UPDATE })
         res.json({
             success: "Usuario actualizado.",
-            usuario: updateUserById.customer_name
+            usuario: newUserParams
         })
     }
     catch (error) { res.status(400).json("Error: " + error) }

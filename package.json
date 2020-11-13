@@ -23,5 +23,13 @@
   "devDependencies": {},
   "author": "JuanCarlosRamirez",
   "license": "MIT",
-  "keywords": []
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanCarlosRamirez-dev/Proyecto-3-Delilah.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JuanCarlosRamirez-dev/Proyecto-3-Delilah/issues"
+  },
+  "homepage": "https://github.com/JuanCarlosRamirez-dev/Proyecto-3-Delilah#readme"
 }

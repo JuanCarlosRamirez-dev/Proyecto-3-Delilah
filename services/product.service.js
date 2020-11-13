@@ -1,15 +1,21 @@
 const sequelize = require("../api/config/conexion")
-const { validationResult } = require("express-validator");
+const {
+    validationResult
+} = require("express-validator");
 const productQueries = require("../dal/repositories/product.repository")
 
 async function getAllProducts(req, res) {
 
     try {
-        let reqProduct = await sequelize.query(productQueries.requestProductsQuery(),
-            { type: sequelize.QueryTypes.SELECT });
-        res.json({ reqProduct })
+        let reqProduct = await sequelize.query(productQueries.requestProductsQuery(), {
+            type: sequelize.QueryTypes.SELECT
+        });
+        res.json({
+            reqProduct
+        })
+    } catch (error) {
+        res.status(400).json("Error: " + error)
     }
-    catch (error) { res.status(400).json("Error: " + error) }
 }
 
 async function createProduct(req, res) {
@@ -23,19 +29,29 @@ async function createProduct(req, res) {
 
     try {
         const errors = validationResult(req)
-        if (!errors.isEmpty()) return res.status(404).json({ errores: errors.array() })
+        if (!errors.isEmpty()) return res.status(404).json({
+            errores: errors.array()
+        })
 
-        const productExist = await sequelize.query(productQueries.requestSingleProductQuery(newProductParams.item_name),
-            { type: sequelize.QueryTypes.SELECT })
+        const productExist = await sequelize.query(productQueries.requestSingleProductQuery(newProductParams.item_name), {
+            type: sequelize.QueryTypes.SELECT
+        })
         if (productExist[0]) {
-            res.json({ error: "El producto ya existe." })
+            res.json({
+                error: "El producto ya existe."
+            })
         } else {
-            const newProduct = await sequelize.query(productQueries.createProductQuery(newProductParams),
-                { type: sequelize.QueryTypes.SELECT })
-            res.json({ success: "Producto creado con éxito: ", data: newProduct })
+            const newProduct = await sequelize.query(productQueries.createProductQuery(newProductParams), {
+                type: sequelize.QueryTypes.SELECT
+            })
+            res.json({
+                success: "Producto creado con éxito: ",
+                data: newProduct
+            })
         }
+    } catch (error) {
+        res.status(400).json("Error: " + error)
     }
-    catch (error) { res.status(400).json("Error: " + error) }
 
 }
 
@@ -43,7 +59,6 @@ async function updateProduct(req, res) {
 
     const productId = req.params.productId
     const newProductParams = {
-        id: req.params.id,
         item_name: req.body.item_name,
         description: req.body.description,
         category_id: req.body.category_id,
@@ -51,15 +66,17 @@ async function updateProduct(req, res) {
     }
 
     try {
-        const updateProductById = await sequelize.query(productQueries.updateProductQuery(productId, newProductParams),
-            { type: sequelize.QueryTypes.UPDATE })
+        const updateProductById = await sequelize.query(productQueries.updateProductQuery(productId, newProductParams), {
+            type: sequelize.QueryTypes.UPDATE
+        })
 
         res.json({
             success: "Producto actualizado.",
             product: newProductParams
         })
+    } catch (error) {
+        res.status(400).json("Error: " + error)
     }
-    catch (error) { res.status(400).json("Error: " + error) }
 }
 
 async function deleteProduct(req, res) {
@@ -67,10 +84,21 @@ async function deleteProduct(req, res) {
     const productId = req.params.productId;
 
     try {
-        const deleteProductById = await sequelize.query(productQueries.deleteProductQuery(productId),
-            { type: sequelize.QueryTypes.DELETE })
-        res.json({ success: "Producto eliminado con exito." })
+        const deleteProductById = await sequelize.query(productQueries.deleteProductQuery(productId), {
+            type: sequelize.QueryTypes.DELETE
+        })
+        res.json({
+            success: "Producto eliminado con exito."
+        })
+    } catch (error) {
+        res.status(400).json("Error: " + error)
     }
-    catch (error) { res.status(400).json("Error: " + error) }
 
+}
+
+module.exports = {
+    getAllProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct
 }

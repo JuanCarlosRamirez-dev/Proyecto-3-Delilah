@@ -1,5 +1,3 @@
-const { param } = require("../../api/routes/products");
-
 const requestEmailQuery = (email) => {
     const query = `SELECT DISTINCT email FROM customers WHERE email = "${email}"`;
     return query;
@@ -20,4 +18,9 @@ const updateUserQuery = (productId, params) => {
     return query;
 }
 
-module.exports = { requestEmailQuery, createUserQuery, requestLoginQuery, updateUserQuery }
+module.exports = {
+    requestEmailQuery,
+    createUserQuery,
+    requestLoginQuery,
+    updateUserQuery
+}

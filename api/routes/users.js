@@ -1,5 +1,7 @@
 const router = require("express").Router();
-const { check } = require("express-validator");
+const {
+  check
+} = require("express-validator");
 const userServices = require("../../services/user.service");
 
 router.post("/register", [

@@ -1,5 +1,3 @@
-const { param } = require("../../api/routes/products");
-
 const requestProductsQuery = () => {
     const query = `SELECT item_name, description, price FROM menu_item`;
     return query;
@@ -25,4 +23,10 @@ const deleteProductQuery = (id) => {
     return query;
 }
 
-module.exports = { requestProductsQuery, requestSingleProductQuery, createProductQuery, updateProductQuery, deleteProductQuery }
+module.exports = {
+    requestProductsQuery,
+    requestSingleProductQuery,
+    createProductQuery,
+    updateProductQuery,
+    deleteProductQuery
+}

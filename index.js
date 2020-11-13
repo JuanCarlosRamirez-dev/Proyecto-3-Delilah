@@ -12,7 +12,9 @@ app.listen(PORT_SERVER, () => {
   console.info(`Servidor arrancado en el puerto ${PORT_SERVER}`);
 });
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({
+  force: false
+}).then(() => {
   console.info("Tablas sincronizadas");
 }).catch(console.error);
 
@@ -23,7 +25,9 @@ app.use(function (err, req, res, next) {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use("/api", apiRouter);
 

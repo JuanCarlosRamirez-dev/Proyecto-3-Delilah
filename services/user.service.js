@@ -48,6 +48,8 @@ async function userLogin(req, res) {
             type: sequelize.QueryTypes.SELECT
         })
 
+        console.log(getUser)
+
         const same = bcrypt.compareSync(req.body.password, getUser[0].password)
         if (same) {
             res.json({
@@ -56,7 +58,7 @@ async function userLogin(req, res) {
             })
             createToken(getUser)
         } else {
-            res.json({
+            res.status(403).json({
                 error: "Usuario y/o contraseña incorrectos"
             })
         }
@@ -67,6 +69,7 @@ async function userLogin(req, res) {
 
 async function userModify(req, res) {
 
+    req.body.password = bcrypt.hashSync(req.body.password, 10)
     const userId = req.params.userId;
     const newUserParams = {
         admin: req.body.admin,
@@ -95,8 +98,8 @@ async function userModify(req, res) {
 
 const createToken = (getUser) => {
     const payload = {
-        usuarioId: getUser[0].id,
-        userAdmin: getUser[0].admin,
+        customerId: getUser[0].id,
+        isAdmin: getUser[0].admin,
         createdAt: moment().unix,
         expiredAt: moment().add(10, "minutes").unix
     }
